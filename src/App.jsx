@@ -1,35 +1,80 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+function InputForm() {
+  const [input, setInput] = useState("");
+
+  function handleInput(event) {
+    setInput(event.target.value);
+  }
+
+  function handleClickAdd() {
+    window.alert("clicked!");
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <input type="text" onChange={handleInput} value={input} />
+
+      <button type="button" onClick={handleClickAdd}>
+        Add
+      </button>
+    </div>
+  );
 }
 
-export default App
+function TodoList({ todos }) {
+  return (
+    <div>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <input type="checkbox" checked={todo.completed} />
+
+            {todo.text}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default function App() {
+  const todos = [
+    { id: 1, text: "Todo 1", completed: false },
+    { id: 2, text: "Todo 2", completed: false },
+    { id: 3, text: "Todo 3", completed: false },
+    { id: 4, text: "Todo 4", completed: false },
+  ];
+
+  function handleClickFilterAll() {
+    alert("filter all clicked");
+  }
+
+  function handleClickFilterActive() {
+    alert("filter active clicked");
+  }
+
+  function handleClickFilterCompleted() {
+    alert("filter completed clicked");
+  }
+
+  return (
+    <div>
+      <h1>Todo App</h1>
+
+      <InputForm />
+
+      <TodoList todos={todos} />
+
+      <p>
+        <small>0 items left</small>
+      </p>
+
+      <div>
+        <button onClick={handleClickFilterAll}>All</button>
+        <button onClick={handleClickFilterActive}>Active</button>
+        <button onClick={handleClickFilterCompleted}>Completed</button>
+      </div>
+    </div>
+  );
+}
