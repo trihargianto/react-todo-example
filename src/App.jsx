@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function InputForm() {
+function InputForm({ onAdd }) {
   const [input, setInput] = useState("");
 
   function handleInput(event) {
@@ -8,7 +8,7 @@ function InputForm() {
   }
 
   function handleClickAdd() {
-    window.alert("clicked!");
+    onAdd(input);
   }
 
   return (
@@ -22,13 +22,17 @@ function InputForm() {
   );
 }
 
-function TodoList({ todos }) {
+function TodoList({ todos, onCheck }) {
   return (
     <div>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
-            <input type="checkbox" checked={todo.completed} />
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => onCheck(todo.id)}
+            />
 
             {todo.text}
           </li>
@@ -39,42 +43,46 @@ function TodoList({ todos }) {
 }
 
 export default function App() {
-  const todos = [
-    { id: 1, text: "Todo 1", completed: false },
-    { id: 2, text: "Todo 2", completed: false },
-    { id: 3, text: "Todo 3", completed: false },
-    { id: 4, text: "Todo 4", completed: false },
-  ];
+  const [todos, setTodos] = useState([]);
 
-  function handleClickFilterAll() {
-    alert("filter all clicked");
+  function handleAdd(text) {
+    const newTodo = {
+      id: Math.random(),
+      text,
+      completed: false,
+    };
+
+    setTodos([...todos, newTodo]);
   }
 
-  function handleClickFilterActive() {
-    alert("filter active clicked");
+  function handleCheck(id) {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed: !todo.completed,
+        };
+      }
+
+      return todo;
+    });
+
+    setTodos(newTodos);
   }
 
-  function handleClickFilterCompleted() {
-    alert("filter completed clicked");
-  }
+  const itemLeft = todos.filter((todo) => !todo.completed);
 
   return (
     <div>
       <h1>Todo App</h1>
 
-      <InputForm />
+      <InputForm onAdd={handleAdd} />
 
-      <TodoList todos={todos} />
+      <TodoList todos={todos} onCheck={handleCheck} />
 
       <p>
-        <small>0 items left</small>
+        <small>{itemLeft.length} items left</small>
       </p>
-
-      <div>
-        <button onClick={handleClickFilterAll}>All</button>
-        <button onClick={handleClickFilterActive}>Active</button>
-        <button onClick={handleClickFilterCompleted}>Completed</button>
-      </div>
     </div>
   );
 }
